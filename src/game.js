@@ -43,7 +43,7 @@ export default (nameOfPlayer1, testFunc) => {
   };
   const playersWithCards = startDistribute(player1, player2, pack);
   // definition of trump
-  const defineTrump = () => {
+  const makeTrumps = () => {
     const defTrump = pack.pop();
     const trumpSuit = defTrump.suit;
     playersWithCards.map(player => player.cards.map((card) => {
@@ -51,7 +51,6 @@ export default (nameOfPlayer1, testFunc) => {
       return trump;
     }));
     const topOfPack = [defTrump];
-    // newPack.
     topOfPack.push(...pack);
     const newPack = topOfPack.map((card) => {
       card.suit === trumpSuit ? card.type = 'trump' : card;
@@ -59,5 +58,39 @@ export default (nameOfPlayer1, testFunc) => {
     });
     return newPack;
   };
-  return defineTrump();
+  const newPack = makeTrumps();
+  const defineWhoStart = (players) => {
+    const playersWithTrumps = players.map(player => player.cards.filter(card => card.type === 'trump'));
+    const pl1 = playersWithTrumps[0];
+    const pl2 = playersWithTrumps[1];
+    const compareCards = ([player1, player2]) => {
+      const cardOfPlayer1 = player1.cards.pop(); // the least card of player 1
+      const cardOfPlayer2 = player2.cards.pop(); // the least card of player 2
+      // if (player1.cards === undefined || ){
+        if (cardOfPlayer1.range !== cardOfPlayer2.range) {
+          return cardOfPlayer1.range < cardOfPlayer2.range ? player1 : player2;
+        }
+      }
+      return compareCards([player1, player2]);
+    };
+    if (pl1.cards.length === 0 && pl2.cards.length === 0) {
+      /* define the least card range of given cards;
+      case when players don't have trumps*/
+      const playersWithSortCards = players.map(player => player.cards.sort((a, b) => {
+        if (a.range > b.range) {
+          return -1;
+        }
+        if (a.range < b.range) {
+          return 1;
+        }
+        return 0;
+      }));
+      return compareCards(players.slice());
+    }
+    return compareCards(playersWithTrumps);
+  };
+  const runGame = () => {
+    // definition who go first
+  };
+  return defineWhoStart(playersWithCards);
 };
