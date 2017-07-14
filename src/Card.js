@@ -1,15 +1,15 @@
 export default class Card {
-  constructor(name, range, suit, type) {
+  constructor(name, seniority, suit, type) {
     this.name = name;
-    this.range = range;
+    this.seniority = seniority;
     this.suit = suit;
     this.type = type;
   }
   getName() {
     return this.name;
   }
-  getRange() {
-    return this.range;
+  getSeniority() {
+    return this.seniority;
   }
   getType() {
     return this.type;
