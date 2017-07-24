@@ -1,7 +1,7 @@
 import Card from './Card';
 import Player from './Player';
 
-export default (nameOfPlayer1, testFunc) => {
+export default (nameOfPlayer1, testFunc1, testFunc2) => {
   // shuffle of cards
   const consOfPack = () => {
     const pack = [];
@@ -23,7 +23,7 @@ export default (nameOfPlayer1, testFunc) => {
     };
     return iter(names, seniority, suits, pack);
   };
-  const pack = testFunc ? testFunc(consOfPack()) :
+  const pack = testFunc1 ? testFunc1(consOfPack(), testFunc2) :
   consOfPack().sort(() => {
     const resultOfsort = Math.random() > 0.5 ? 1 : -1;
     return resultOfsort;
@@ -56,7 +56,11 @@ export default (nameOfPlayer1, testFunc) => {
   };
   const playersWithCards = startDistribute(player1, player2, packWithTrumps);
   const defineWhoStarts = (players) => {
-    const playersWithSortedCards = players.map((player) => {
+    const playersWithUniqCards = players.map((player) => {
+      player.cards.slice().filter((card, index, arr) => arr.indexOf(card) === index);
+      return player;
+    });
+    const playersWithSortedCards = playersWithUniqCards.map((player) => {
       player.cards.slice().sort((a, b) => {
         if (a.seniority > b.seniority) {
           return -1;
@@ -85,6 +89,7 @@ export default (nameOfPlayer1, testFunc) => {
       const leastCardOfPlayer2 = pl2.cards.pop();
       if (!leastCardOfPlayer1 && !leastCardOfPlayer2) {
         /* Here is required  the specific desicion */
+        return 'required reset';
       }
       if (!leastCardOfPlayer1) {
         return gamblers[1];
