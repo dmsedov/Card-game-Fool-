@@ -24,44 +24,40 @@ export default (nameOfPlayer1, testFunc) => {
     return iter(names, seniority, suits, pack);
   };
   const pack = testFunc ? testFunc(consOfPack()) :
-  consOfPack().sort(() => Math.random() > 0.5 ? 1 : -1);/* potential Error;
-  if testFunc be entered by user may be it'll require try...catch block*/
+  consOfPack().sort(() => {
+    const resultOfsort = Math.random() > 0.5 ? 1 : -1;
+    return resultOfsort;
+  });
   // making players
   const player1 = new Player(nameOfPlayer1, []);
   const player2 = new Player('Player2', []);
+  const addTrumpsToPack = (stackOfCards) => {
+    const trumpCard = stackOfCards.slice().reverse()[12];
+    const trumpSuit = trumpCard.suit;
+    const newPack = stackOfCards.map((card) => {
+      const { name, seniority, suit } = card;
+      const modifiedCard = card.suit === trumpSuit ? new Card(name, seniority, suit, 'trump') : card;
+      return modifiedCard;
+    });
+    return newPack;
+  };
+  const packWithTrumps = addTrumpsToPack(pack);
   // distribute cards between of players
-  const startDistribute = (gambler1, gambler2, cards) => {
+  const startDistribute = (gambler1, gambler2, shuffledCards) => {
     if (gambler1.cards.length === 6 && gambler2.cards.length === 6) {
       return [gambler1, gambler2];
     }
     let topCard;
-    topCard = cards.pop();
+    topCard = shuffledCards.pop();
     gambler1.take(topCard);
-    topCard = cards.pop();
+    topCard = shuffledCards.pop();
     gambler2.take(topCard);
-    return startDistribute(gambler1, gambler2, cards);
+    return startDistribute(gambler1, gambler2, shuffledCards);
   };
-  const playersWithCards = startDistribute(player1, player2, pack);
-  // definition of trump
-  const makeTrumps = () => {
-    const defTrump = pack.pop();
-    const trumpSuit = defTrump.suit;
-    playersWithCards.map(player => player.cards.map((card) => {
-      const trump = card.suit === trumpSuit ? card.type = 'trump' : card;
-      return trump;
-    }));
-    const topOfPack = [defTrump];
-    topOfPack.push(...pack);
-    const newPack = topOfPack.map((card) => {
-      card.suit === trumpSuit ? card.type = 'trump' : card;
-      return card;
-    });
-    return newPack;
-  };
-  const newPack = makeTrumps();
-  const defineWhoStart = (players) => {
+  const playersWithCards = startDistribute(player1, player2, packWithTrumps);
+  const defineWhoStarts = (players) => {
     const playersWithSortedCards = players.map((player) => {
-      player.cards.sort((a, b) => {
+      player.cards.slice().sort((a, b) => {
         if (a.seniority > b.seniority) {
           return -1;
         }
@@ -72,42 +68,40 @@ export default (nameOfPlayer1, testFunc) => {
       });
       return player;
     });
-    const prepareCardsForCompare = ([pl1, pl2]) => {
+    const preparePlayersCardsForCompare = ([pl1, pl2]) => {
       if (pl1.cards.find(card => card.type === 'trump') || pl2.cards.find(card => card.type === 'trump')) {
-        const g = [pl1, pl2].map((player) => {
-          // const filteredCards = ;
-          // console.log(player.cards.filter(card => card.type === 'trump'));
-          player.cards = player.cards.filter(card => card.type === 'trump');
-          return player;
+        const playersWithTrumps = [pl1, pl2].map((player) => {
+          const { name, cards } = player;
+          const trumpCards = cards.filter(card => card.type === 'trump');
+          return new Player(name, trumpCards);
         });
-        console.log(g);
-        return g;
+        return playersWithTrumps;
       }
       return [pl1, pl2];
     };
-    const preparedCards = prepareCardsForCompare(playersWithSortedCards);
-    const compareCards = ([pl1, pl2]) => {
+    const playersWithPreparedCards = preparePlayersCardsForCompare(playersWithSortedCards);
+    const compareCards = ([pl1, pl2], gamblers) => {
       const leastCardOfPlayer1 = pl1.cards.pop();
       const leastCardOfPlayer2 = pl2.cards.pop();
       if (!leastCardOfPlayer1 && !leastCardOfPlayer2) {
         /* Here is required  the specific desicion */
       }
       if (!leastCardOfPlayer1) {
-        return players[1];
+        return gamblers[1];
       }
       if (!leastCardOfPlayer2) {
-        return players[0];
+        return gamblers[0];
       }
       if (leastCardOfPlayer1.seniority !== leastCardOfPlayer2.seniority) {
         return leastCardOfPlayer1.seniority < leastCardOfPlayer2.seniority ?
          players[0] : players[1];
       }
-      return compareCards([pl1, pl2]);
+      return compareCards([pl1, pl2], gamblers);
     };
-    return compareCards(preparedCards);
+    return compareCards(playersWithPreparedCards, players);
   };
   const runGame = () => {
     // definition who go first
   };
-  return defineWhoStart(playersWithCards);
+  return defineWhoStarts(playersWithCards);
 };

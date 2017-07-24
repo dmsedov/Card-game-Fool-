@@ -1,6 +1,6 @@
 {
   "name": "card-game-fool",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This is card game 'Fool' based on js",
   "scripts": {
     "babel-node": "babel-node",
