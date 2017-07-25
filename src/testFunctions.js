@@ -43,20 +43,32 @@ const getTestPack1 = (pack) => {
 };
 
 const getTestPack2 = (pack, testFunc) => {
-  const cardsOfPlayers = testFunc(pack).map((card) => {
-    const { name, seniority, type } = card;
-    if (card.name === '6' && card.suit === 'heart') {
+  const cards = testFunc(pack).map((card) => {
+    const { name, seniority, suit, type } = card;
+    if (name === '6' && suit === 'heart') {
       return new Card(name, seniority, 'diamond', type);
     }
-    if (card.name === 'Jack' && card.suit === 'heart') {
+    if (name === 'Jack' && suit === 'heart') {
       return new Card(name, seniority, 'diamond', type);
     }
-    if (card.name === 'Ace' && card.suit === 'heart') {
+    if (name === 'Ace' && suit === 'heart') {
       return new Card(name, seniority, 'diamond', type);
     }
     return card;
   });
-  return cardsOfPlayers;
+  return cards;
 };
 
-export { getTestPack1, getTestPack2 };
+const getTestPack3 = (pack, testFunc1, testFunc2) => {
+  const cards = testFunc1(pack, testFunc2);
+  const newCards = cards.map((card) => {
+    const { name, suit, type } = card;
+    if (name === 'Jack' && suit === 'diamond') {
+      return new Card('9', 9, 'diamond', type);
+    }
+    return card;
+  });
+  return newCards;
+};
+
+export { getTestPack1, getTestPack2, getTestPack3 };
