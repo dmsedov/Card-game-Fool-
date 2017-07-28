@@ -1,7 +1,9 @@
 import Card from './Card';
 import Player from './Player';
+import Result from './Result';
+import sortFunction from './sortFunction';
 
-export default (nameOfPlayer1, testFunc1, testFunc2) => {
+export default (nameOfPlayer1, testFunc1, testFunc2, testFunc3) => {
   // shuffle of cards
   const consOfPack = () => {
     const pack = [];
@@ -23,7 +25,7 @@ export default (nameOfPlayer1, testFunc1, testFunc2) => {
     };
     return iter(names, seniority, suits, pack);
   };
-  const pack = testFunc1 ? testFunc1(consOfPack(), testFunc2) :
+  const pack = testFunc1 ? testFunc1(consOfPack(), testFunc2, testFunc3) :
   consOfPack().sort(() => {
     const resultOfsort = Math.random() > 0.5 ? 1 : -1;
     return resultOfsort;
@@ -49,9 +51,9 @@ export default (nameOfPlayer1, testFunc1, testFunc2) => {
     }
     let topCard;
     topCard = shuffledCards.pop();
-    gambler1.take(topCard);
+    gambler1.addCardFromPack(topCard);
     topCard = shuffledCards.pop();
-    gambler2.take(topCard);
+    gambler2.addCardFromPack(topCard);
     return startDistribute(gambler1, gambler2, shuffledCards);
   };
   const playersWithCards = startDistribute(player1, player2, packWithTrumps);
@@ -61,15 +63,7 @@ export default (nameOfPlayer1, testFunc1, testFunc2) => {
       return player;
     });
     const playersWithSortedCards = playersWithUniqCards.map((player) => {
-      player.cards.slice().sort((a, b) => {
-        if (a.seniority > b.seniority) {
-          return -1;
-        }
-        if (a.seniority < b.seniority) {
-          return 1;
-        }
-        return 0;
-      });
+      player.cards.slice().sort(sortFunction);
       return player;
     });
     const preparePlayersCardsForCompare = ([pl1, pl2]) => {
@@ -105,8 +99,12 @@ export default (nameOfPlayer1, testFunc1, testFunc2) => {
     };
     return compareCards(playersWithPreparedCards, players);
   };
-  const runGame = () => {
-    // definition who go first
+  const startPlayer = defineWhoStarts(playersWithCards);
+  const runGame = (startPlayer, players) => {
+    const gameStats = new Result(startPlayer, players);
+    const iter = (playerWhoStarts, players) => {
+
+    }
   };
-  return defineWhoStarts(playersWithCards);
+  return playersWithCards[0].giveCards();
 };
