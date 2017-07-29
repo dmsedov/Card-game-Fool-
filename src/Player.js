@@ -36,8 +36,11 @@ export default class Player {
         }
         return card.type === 'trump' ? 1 : 0;
       });
-      acc.push(desiredCard);
-      return iter(rest, acc);
+      if (desiredCard) {
+        acc.push(desiredCard);
+        return iter(rest, acc);
+      }
+      return acc;
     };
     const satisfactoryCards = iter(arrOfCards, []);
     if (satisfactoryCards.length === arrOfCards.length) {
