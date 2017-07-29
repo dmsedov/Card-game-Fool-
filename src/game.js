@@ -49,11 +49,8 @@ export default (nameOfPlayer1, testFunc1, testFunc2, testFunc3) => {
     if (gambler1.cards.length === 6 && gambler2.cards.length === 6) {
       return [gambler1, gambler2];
     }
-    let topCard;
-    topCard = shuffledCards.pop();
-    gambler1.addCardFromPack(topCard);
-    topCard = shuffledCards.pop();
-    gambler2.addCardFromPack(topCard);
+    gambler1.addCardFromPack(shuffledCards, 1);
+    gambler2.addCardFromPack(shuffledCards, 1);
     return startDistribute(gambler1, gambler2, shuffledCards);
   };
   const playersWithCards = startDistribute(player1, player2, packWithTrumps);
@@ -100,11 +97,28 @@ export default (nameOfPlayer1, testFunc1, testFunc2, testFunc3) => {
     return compareCards(playersWithPreparedCards, players);
   };
   const startPlayer = defineWhoStarts(playersWithCards);
-  const runGame = (startPlayer, players) => {
+  const runGame = (playerWhoGoesFirst, players, packOfCards) => {
     const gameStats = new Result(startPlayer, players);
-    const iter = (playerWhoStarts, players) => {
-
-    }
+    const playerWhoHasToRepulse = playersWithCards.find(player => player !== startPlayer);
+    const game = (attackerPlayer, defenderPlayer, resultsOfGame) => {
+      const beatCards = attackerPlayer.giveCards();
+      defenderPlayer.takeCards(beatCards);
+      const takeCardsFromPack = (firstPlayer, secondPlayer, stackOfCards) => {
+        const countOfCardsPl1 = firstPlayer.cards.length;
+        const countOfCardsPl2 = secondPlayer.cards.length;
+        firstPlayer.addCardFromPack(stackOfCards, 6 - countOfCardsPl1);
+        if (countOfCardsPl2 < 6) {
+          secondPlayer.addCardFromPack(stackOfCards, 6 - countOfCardsPl1);
+        }
+      };
+      takeCardsFromPack(attackerPlayer, defenderPlayer, packOfCards);
+      
+      if (defenderPlayer.status === 'beat') {
+        return game(defenderPlayer, attackerPlayer, resultsOfGame);
+      }
+      return game(attackerPlayer, defenderPlayer, resultsOfGame);
+    };
+    return game(playerWhoGoesFirst, playerWhoHasToRepulse, gameStats);
   };
-  return playersWithCards[0].giveCards();
+  return runGame(startPlayer, playersWithCards, packWithTrumps);
 };
