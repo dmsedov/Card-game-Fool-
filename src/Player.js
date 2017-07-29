@@ -20,8 +20,14 @@ export default class Player {
     }
     return this.cardsOfRounds;
   }
-  addCardFromPack(card) {
-    return this.cards.push(card);
+  addCardFromPack(pack, count) {
+    if (count === 1) {
+      this.cards.push(pack.pop());
+      return;
+    }
+    this.cards.push(...(pack.slice(-count)));
+    const startPoint = (pack.length - 1) - count;
+    pack.splice(startPoint, count);
   }
   takeCards(arrOfCards) {
     const iter = ([head, ...rest], acc) => {
@@ -45,8 +51,8 @@ export default class Player {
     const satisfactoryCards = iter(arrOfCards, []);
     if (satisfactoryCards.length === arrOfCards.length) {
       const setOfcards = new Set(satisfactoryCards);
-      this.status = 'go';
       this.cards = this.cards.filter(cards => !setOfcards.has(cards));
+      this.status = 'beat';
       return;
     }
     this.status = 'take';
@@ -68,7 +74,8 @@ export default class Player {
     const arrOfCards = cardsOrdinary.reduce((acc, card) => {
       const { name } = acc[0];
       if (card.name === name) {
-        return acc.push(card);
+        acc.push(card);
+        return acc;
       }
       return acc;
     }, [minCard2]).reverse();
