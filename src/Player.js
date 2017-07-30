@@ -56,12 +56,12 @@ export default class Player {
       return;
     }
     this.status = 'take';
-    this.cardsOfRounds.push(arrOfCards);
+    this.cards.push(arrOfCards);
   }
   giveCards() {
     const cardsOrdinary = this.cards.filter(card => card.type === 'ordinary');
     const cardsTrump = this.cards.filter(card => card.type === 'trump');
-    this.status = 'go';
+    this.status = 'lead';
     if (cardsOrdinary.length === 0) {
       cardsTrump.sort(sortFunction);
       const minCard1 = cardsTrump.pop();
