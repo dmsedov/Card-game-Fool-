@@ -98,9 +98,18 @@ export default (nameOfPlayer1, testFunc1, testFunc2, testFunc3) => {
   };
   const startPlayer = defineWhoStarts(playersWithCards);
   const runGame = (playerWhoGoesFirst, players, packOfCards) => {
-    const gameStats = new Result(startPlayer, players);
+    const gameStats = new Result(startPlayer, players, 0);
     const playerWhoHasToRepulse = playersWithCards.find(player => player !== startPlayer);
     const game = (attackerPlayer, defenderPlayer, resultsOfGame) => {
+      if (attackerPlayer.getCountOfCards() === 0) {
+        const message = `${attackerPlayer.getName()} win!`;
+        resultsOfGame.addToLog(message);
+        return resultsOfGame;
+      } else if (defenderPlayer.getCountOfCards() === 0) {
+        const message = `${defenderPlayer.getName()} win!`;
+        resultsOfGame.addToLog(message);
+        return resultsOfGame;
+      }
       const beatCards = attackerPlayer.giveCards();
       defenderPlayer.takeCards(beatCards);
       const takeCardsFromPack = (firstPlayer, secondPlayer, stackOfCards) => {
@@ -112,7 +121,10 @@ export default (nameOfPlayer1, testFunc1, testFunc2, testFunc3) => {
         }
       };
       takeCardsFromPack(attackerPlayer, defenderPlayer, packOfCards);
-      
+      const message = `1) Player ${attackerPlayer.getName()} attackerPlayer.status}s the ${beatCards}
+      2) Player ${defenderPlayer.getName()} ${defenderPlayer.status}s the ${beatCards}`;
+      resultsOfGame.addToLog(message);
+      resultsOfGame.increaseRounds();
       if (defenderPlayer.status === 'beat') {
         return game(defenderPlayer, attackerPlayer, resultsOfGame);
       }
