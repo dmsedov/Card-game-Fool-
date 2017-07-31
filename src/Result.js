@@ -12,6 +12,7 @@ export default class Result {
   }
   increaseRounds() {
     this.numberOfrounds += 1;
+    return this.numberOfrounds;
   }
   addToLog(message) {
     if (!this.log) {
@@ -20,10 +21,10 @@ export default class Result {
     }
     this.log.push(message);
   }
-  getCardsOfPlayer(index, playerName) {
-    if (playerName) {
-      return this.players[0].getCardsOfRounds();
+  getCardsOfPlayer(round, playerName) {
+    if (playerName === this.players[0].name) {
+      return this.players[0].getCardsOfRound(round);
     }
-    return this.players[1].getCardsOfRounds();
+    return this.players[1].getCardsOfRound(round);
   }
 }
