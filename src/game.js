@@ -55,8 +55,9 @@ export default (nameOfPlayer1, testFunc1, testFunc2, testFunc3) => {
   };
   const playersWithCards = startDistribute(player1, player2, packWithTrumps);
   const preparePackForGame = (arrOfcards) => {
-    const trumpCard = arrOfcards.shift();
-    arrOfcards.push(trumpCard);
+    const trumpCard = arrOfcards.pop();
+    arrOfcards.unshift(trumpCard);
+    console.log(arrOfcards);
     return arrOfcards;
   };
   const packForGame = preparePackForGame(packWithTrumps);
@@ -103,7 +104,7 @@ export default (nameOfPlayer1, testFunc1, testFunc2, testFunc3) => {
     return compareCards(playersWithPreparedCards, players);
   };
   const startPlayer = defineWhoStarts(playersWithCards);
-  console.log(packWithTrumps, 'input pack!!!!');
+  console.log(packForGame, 'packForGame!');
   const runGame = (playerWhoGoesFirst, players, packOfCards) => {
     const gameStats = new Result(startPlayer, players, 0);
     const playerWhoHasToRepulse = playersWithCards.find(player => player !== startPlayer);
@@ -129,8 +130,8 @@ export default (nameOfPlayer1, testFunc1, testFunc2, testFunc3) => {
         firstPlayer.addCardFromPack(stackOfCards, 6 - countOfCardsPl1);
       };
       takeCardsFromPack(attackerPlayer, defenderPlayer, packOfCards);
-      console.log(attackerPlayer.getCards(), 'attacked pl');
-      console.log(defenderPlayer.getCards(), 'defender pl');
+      // console.log(attackerPlayer.getCards(), 'attacked pl');
+      // console.log(defenderPlayer.getCards(), 'defender pl');
       const message = `1) Player ${attackerPlayer.getName()} attackerPlayer.status}s the ${beatCards}
       2) Player ${defenderPlayer.getName()} ${defenderPlayer.status}s the ${beatCards}`;
       resultsOfGame.addToLog(message);
