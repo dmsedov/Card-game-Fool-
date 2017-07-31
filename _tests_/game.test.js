@@ -1,7 +1,7 @@
 import makeGame from '../src/game';
 import { getTestPack1, getTestPack2, getTestPack3 } from '../src/testFunctions';
 import Card from '../src/Card';
-import Player from '..src/Player';
+import Player from '../src/Player';
 
 
 describe('test', () => {

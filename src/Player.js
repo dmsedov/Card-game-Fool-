@@ -14,11 +14,13 @@ export default class Player {
   getCountOfCards() {
     return this.cards.length;
   }
-  getCardsOfRounds() {
-    if (!this.cardsOfRounds) {
-      this.cardsOfRounds = [];
-    }
+  addCardsOfRounds() {
+    const cards = !this.cardsOfRounds ? this.cardsOfRounds = [] : this.cardsOfRounds;
+    cards.push(this.cards);
     return this.cardsOfRounds;
+  }
+  getCardsOfRound(round) {
+    return this.cardsOfRounds[round];
   }
   addCardFromPack(pack, count) {
     if (count === 1) {
@@ -31,9 +33,6 @@ export default class Player {
   }
   takeCards(arrOfCards) {
     const iter = ([head, ...rest], acc) => {
-      if (rest.length === 0) {
-        return acc;
-      }
       const desiredCard = this.cards.find((card) => {
         const checkingSeniority = card.seniority > head.seniority;
         const checkingSuit = card.suit === head.suit;
@@ -44,9 +43,11 @@ export default class Player {
       });
       if (desiredCard) {
         acc.push(desiredCard);
-        return iter(rest, acc);
       }
-      return acc;
+      if (rest.length === 0) {
+        return acc;
+      }
+      return iter(rest, acc);
     };
     const satisfactoryCards = iter(arrOfCards, []);
     if (satisfactoryCards.length === arrOfCards.length) {
@@ -56,11 +57,11 @@ export default class Player {
       return;
     }
     this.status = 'take';
-    this.cards.push(arrOfCards);
+    this.cards.push(...arrOfCards);
   }
   giveCards() {
-    const cardsOrdinary = this.cards.filter(card => card.type === 'ordinary');
-    const cardsTrump = this.cards.filter(card => card.type === 'trump');
+    const cardsOrdinary = this.cards.filter(card => card.getType() === 'ordinary');
+    const cardsTrump = this.cards.filter(card => card.getType() === 'trump');
     this.status = 'lead';
     if (cardsOrdinary.length === 0) {
       cardsTrump.sort(sortFunction);

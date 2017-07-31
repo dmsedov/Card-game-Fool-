@@ -30,7 +30,6 @@ export default (nameOfPlayer1, testFunc1, testFunc2, testFunc3) => {
     const resultOfsort = Math.random() > 0.5 ? 1 : -1;
     return resultOfsort;
   });
-  // making players
   const player1 = new Player(nameOfPlayer1, []);
   const player2 = new Player('Player2', []);
   const addTrumpsToPack = (stackOfCards) => {
@@ -44,7 +43,6 @@ export default (nameOfPlayer1, testFunc1, testFunc2, testFunc3) => {
     return newPack;
   };
   const packWithTrumps = addTrumpsToPack(pack);
-  // distribute cards between of players
   const startDistribute = (gambler1, gambler2, shuffledCards) => {
     if (gambler1.cards.length === 6 && gambler2.cards.length === 6) {
       return [gambler1, gambler2];
@@ -57,7 +55,6 @@ export default (nameOfPlayer1, testFunc1, testFunc2, testFunc3) => {
   const preparePackForGame = (arrOfcards) => {
     const trumpCard = arrOfcards.pop();
     arrOfcards.unshift(trumpCard);
-    console.log(arrOfcards);
     return arrOfcards;
   };
   const packForGame = preparePackForGame(packWithTrumps);
@@ -104,7 +101,6 @@ export default (nameOfPlayer1, testFunc1, testFunc2, testFunc3) => {
     return compareCards(playersWithPreparedCards, players);
   };
   const startPlayer = defineWhoStarts(playersWithCards);
-  console.log(packForGame, 'packForGame!');
   const runGame = (playerWhoGoesFirst, players, packOfCards) => {
     const gameStats = new Result(startPlayer, players, 0);
     const playerWhoHasToRepulse = playersWithCards.find(player => player !== startPlayer);
@@ -118,9 +114,12 @@ export default (nameOfPlayer1, testFunc1, testFunc2, testFunc3) => {
         resultsOfGame.addToLog(message);
         return resultsOfGame;
       }
+      const numOfRounds = resultsOfGame.increaseRounds();
       const beatCards = attackerPlayer.giveCards();
-      // console.log(beatCards);
+      console.log(beatCards, 'cards for beat');
       defenderPlayer.takeCards(beatCards);
+      attackerPlayer.addCardsOfRounds();
+      defenderPlayer.addCardsOfRounds();
       const takeCardsFromPack = (firstPlayer, secondPlayer, stackOfCards) => {
         const countOfCardsPl1 = firstPlayer.cards.length;
         const countOfCardsPl2 = secondPlayer.cards.length;
@@ -130,12 +129,9 @@ export default (nameOfPlayer1, testFunc1, testFunc2, testFunc3) => {
         firstPlayer.addCardFromPack(stackOfCards, 6 - countOfCardsPl1);
       };
       takeCardsFromPack(attackerPlayer, defenderPlayer, packOfCards);
-      // console.log(attackerPlayer.getCards(), 'attacked pl');
-      // console.log(defenderPlayer.getCards(), 'defender pl');
       const message = `1) Player ${attackerPlayer.getName()} attackerPlayer.status}s the ${beatCards}
       2) Player ${defenderPlayer.getName()} ${defenderPlayer.status}s the ${beatCards}`;
       resultsOfGame.addToLog(message);
-      resultsOfGame.increaseRounds();
       if (defenderPlayer.status === 'beat') {
         return game(defenderPlayer, attackerPlayer, resultsOfGame);
       }
