@@ -23,13 +23,15 @@ export default class Player {
     return this.cardsOfRounds[round];
   }
   addCardFromPack(pack, count) {
-    if (count === 1) {
-      this.cards.push(pack.pop());
-      return;
-    }
-    this.cards.push(...(pack.slice(-count)));
-    const startPoint = (pack.length - 1) - count;
-    pack.splice(startPoint, count);
+    const iter = (arrOfCards, num) => {
+      if (num === 0) {
+        return;
+      }
+      const topCard = arrOfCards.pop();
+      this.cards.push(topCard);
+      iter(arrOfCards, num - 1);
+    };
+    iter(pack, count);
   }
   takeCards(arrOfCards) {
     const iter = ([head, ...rest], acc) => {
@@ -41,8 +43,10 @@ export default class Player {
         }
         return card.type === 'trump' ? 1 : 0;
       });
+      // console.log(desiredCard, 'desired card!');
       if (desiredCard) {
         acc.push(desiredCard);
+        // console.log(acc, 'acc!!!');
       }
       if (rest.length === 0) {
         return acc;
