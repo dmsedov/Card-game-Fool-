@@ -118,15 +118,23 @@ export default (nameOfPlayer1, testFunc1, testFunc2, testFunc3) => {
       const beatCards = attackerPlayer.giveCards();
       console.log(beatCards, 'cards for beat');
       defenderPlayer.takeCards(beatCards);
+      // console.log(defenderPlayer.getCards(), 'cards of defender');
       attackerPlayer.addCardsOfRounds();
       defenderPlayer.addCardsOfRounds();
       const takeCardsFromPack = (firstPlayer, secondPlayer, stackOfCards) => {
         const countOfCardsPl1 = firstPlayer.cards.length;
         const countOfCardsPl2 = secondPlayer.cards.length;
+        const countPackCards = stackOfCards.length;
         if (countOfCardsPl2 < 6) {
-          secondPlayer.addCardFromPack(stackOfCards, 6 - countOfCardsPl1);
+          const count = (6 - countOfCardsPl2) > countPackCards ? countPackCards :
+          6 - countOfCardsPl2;
+          secondPlayer.addCardFromPack(stackOfCards, count);
         }
-        firstPlayer.addCardFromPack(stackOfCards, 6 - countOfCardsPl1);
+        if (countOfCardsPl1 < 6) {
+          const count = (6 - countOfCardsPl1) > countPackCards ? countPackCards :
+          6 - countOfCardsPl1;
+          firstPlayer.addCardFromPack(stackOfCards, count);
+        }
       };
       takeCardsFromPack(attackerPlayer, defenderPlayer, packOfCards);
       const message = `1) Player ${attackerPlayer.getName()} attackerPlayer.status}s the ${beatCards}
