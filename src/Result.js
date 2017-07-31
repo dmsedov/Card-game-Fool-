@@ -23,8 +23,8 @@ export default class Result {
   }
   getCardsOfPlayer(round, playerName) {
     if (playerName === this.players[0].name) {
-      return this.players[0].getCardsOfRound(round);
+      return this.players[0].getCardsOfRound(round - 1);
     }
-    return this.players[1].getCardsOfRound(round);
+    return this.players[1].getCardsOfRound(round - 1);
   }
 }
