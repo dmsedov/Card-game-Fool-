@@ -43,13 +43,13 @@ export default class Player {
         if (checkingType && checkingSeniority && checkingSuit) {
           array.splice(index, 1);
           return 1;
-        } else if (card.type === 'trump') {
+        } else if (card.type === 'trump' && head.type === 'ordinary') {
           array.splice(index, 1);
           return 1;
         }
         return 0;
       });
-      console.log(desiredCard, 'desired card!');
+      // console.log(desiredCard, 'desired card!');
       if (desiredCard) {
         acc.push(desiredCard);
         console.log(acc, 'acc!!!');
@@ -90,7 +90,15 @@ export default class Player {
       }
       return acc;
     }, [minCard2]).reverse();
-    this.cards = this.cards.filter(card => card.name !== minCard2.name);
+    this.cards = this.cards.filter((card) => {
+      if (card.name === minCard2.name && card.type !== minCard2.type) {
+        return 1;
+      } else if (card.name !== minCard2.name) {
+        return 1;
+      }
+      return 0;
+    });
+    console.log(arrOfCards, 'leading!');
     return arrOfCards;
   }
 }
