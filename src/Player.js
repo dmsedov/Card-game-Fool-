@@ -1,4 +1,4 @@
-import sortFunction from './sortFunction';
+import {  sortByDecrease, sortByIncrease } from './sortFunctions';
 
 export default class Player {
   constructor(name, cards) {
@@ -34,26 +34,32 @@ export default class Player {
     iter(pack, count);
   }
   takeCards(arrOfCards) {
-    const iter = ([head, ...rest], acc) => {
-      const desiredCard = this.cards.find((card) => {
+    const sortedCardsOfPlayer = this.cards.slice().sort(sortByIncrease);
+    const iter = ([head, ...rest], cardsOfPlayer, acc) => {
+      const desiredCard = cardsOfPlayer.find((card, index, array) => {
         const checkingSeniority = card.seniority > head.seniority;
         const checkingSuit = card.suit === head.suit;
-        if (card.type === head.type) {
-          return checkingSeniority && checkingSuit;
+        const checkingType = card.type === head.type;
+        if (checkingType && checkingSeniority && checkingSuit) {
+          array.splice(index, 1);
+          return 1;
+        } else if (card.type === 'trump') {
+          array.splice(index, 1);
+          return 1;
         }
-        return card.type === 'trump' ? 1 : 0;
+        return 0;
       });
-      // console.log(desiredCard, 'desired card!');
+      console.log(desiredCard, 'desired card!');
       if (desiredCard) {
         acc.push(desiredCard);
-        // console.log(acc, 'acc!!!');
+        console.log(acc, 'acc!!!');
       }
       if (rest.length === 0) {
         return acc;
       }
-      return iter(rest, acc);
+      return iter(rest, cardsOfPlayer, acc);
     };
-    const satisfactoryCards = iter(arrOfCards, []);
+    const satisfactoryCards = iter(arrOfCards, sortedCardsOfPlayer, []);
     if (satisfactoryCards.length === arrOfCards.length) {
       const setOfcards = new Set(satisfactoryCards);
       this.cards = this.cards.filter(cards => !setOfcards.has(cards));
@@ -68,13 +74,13 @@ export default class Player {
     const cardsTrump = this.cards.filter(card => card.getType() === 'trump');
     this.status = 'lead';
     if (cardsOrdinary.length === 0) {
-      cardsTrump.sort(sortFunction);
+      cardsTrump.sort(sortByDecrease);
       const minCard1 = cardsTrump.pop();
       const { name } = minCard1;
       this.cards = this.cards.filter(card => card.name !== name);
       return [minCard1];
     }
-    cardsOrdinary.sort(sortFunction);
+    cardsOrdinary.sort(sortByDecrease);
     const minCard2 = cardsOrdinary.pop();
     const arrOfCards = cardsOrdinary.reduce((acc, card) => {
       const { name } = acc[0];
