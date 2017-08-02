@@ -113,6 +113,7 @@ export default (nameOfPlayer1, testFunc1, testFunc2, testFunc3) => {
         resultsOfGame.addToLog(message);
         return resultsOfGame;
       }
+      resultsOfGame.increaseRounds();
       const beatCards = attackerPlayer.giveCards(packOfGame);
       defenderPlayer.takeCards(beatCards);
       attackerPlayer.addCardsOfRounds();
