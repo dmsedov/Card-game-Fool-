@@ -1,10 +1,9 @@
 import Card from './Card';
 import Player from './Player';
 import Result from './Result';
-import sortFunction from './sortFunction';
+import { sortByDecrease } from './sortFunctions';
 
 export default (nameOfPlayer1, testFunc1, testFunc2, testFunc3) => {
-  // shuffle of cards
   const consOfPack = () => {
     const pack = [];
     const names = ['Ace', 'King', 'Queen', 'Jack', '10', '9', '8', '7', '6'];
@@ -64,7 +63,7 @@ export default (nameOfPlayer1, testFunc1, testFunc2, testFunc3) => {
       return player;
     });
     const playersWithSortedCards = playersWithUniqCards.map((player) => {
-      player.cards.slice().sort(sortFunction);
+      player.cards.slice().sort(sortByDecrease);
       return player;
     });
     const preparePlayersCardsForCompare = ([pl1, pl2]) => {
@@ -104,21 +103,18 @@ export default (nameOfPlayer1, testFunc1, testFunc2, testFunc3) => {
   const runGame = (playerWhoGoesFirst, players, packOfCards) => {
     const gameStats = new Result(startPlayer, players, 0);
     const playerWhoHasToRepulse = playersWithCards.find(player => player !== startPlayer);
-    const game = (attackerPlayer, defenderPlayer, resultsOfGame) => {
+    const game = (attackerPlayer, defenderPlayer, resultsOfGame, packOfGame) => {
       if (attackerPlayer.getCountOfCards() === 0) {
-        const message = `${attackerPlayer.getName()} win!`;
+        const message = `${attackerPlayer.getName()} won!`;
         resultsOfGame.addToLog(message);
         return resultsOfGame;
       } else if (defenderPlayer.getCountOfCards() === 0) {
-        const message = `${defenderPlayer.getName()} win!`;
+        const message = `${defenderPlayer.getName()} won!`;
         resultsOfGame.addToLog(message);
         return resultsOfGame;
       }
-      const numOfRounds = resultsOfGame.increaseRounds();
-      const beatCards = attackerPlayer.giveCards();
-      console.log(beatCards, 'cards for beat');
+      const beatCards = attackerPlayer.giveCards(packOfGame);
       defenderPlayer.takeCards(beatCards);
-      // console.log(defenderPlayer.getCards(), 'cards of defender');
       attackerPlayer.addCardsOfRounds();
       defenderPlayer.addCardsOfRounds();
       const takeCardsFromPack = (firstPlayer, secondPlayer, stackOfCards) => {
@@ -136,16 +132,16 @@ export default (nameOfPlayer1, testFunc1, testFunc2, testFunc3) => {
           firstPlayer.addCardFromPack(stackOfCards, count);
         }
       };
-      takeCardsFromPack(attackerPlayer, defenderPlayer, packOfCards);
-      const message = `1) Player ${attackerPlayer.getName()} attackerPlayer.status}s the ${beatCards}
+      takeCardsFromPack(attackerPlayer, defenderPlayer, packOfGame);
+      const message = `1) Player ${attackerPlayer.getName()} ${attackerPlayer.status}s the ${beatCards}
       2) Player ${defenderPlayer.getName()} ${defenderPlayer.status}s the ${beatCards}`;
       resultsOfGame.addToLog(message);
       if (defenderPlayer.status === 'beat') {
-        return game(defenderPlayer, attackerPlayer, resultsOfGame);
+        return game(defenderPlayer, attackerPlayer, resultsOfGame, packOfGame);
       }
-      return game(attackerPlayer, defenderPlayer, resultsOfGame);
+      return game(attackerPlayer, defenderPlayer, resultsOfGame, packOfGame);
     };
-    return game(playerWhoGoesFirst, playerWhoHasToRepulse, gameStats);
+    return game(playerWhoGoesFirst, playerWhoHasToRepulse, gameStats, packOfCards);
   };
   return runGame(startPlayer, playersWithCards, packForGame);
 };
