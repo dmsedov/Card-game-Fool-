@@ -1,4 +1,4 @@
-import { sortByDecrease, sortByIncrease } from './sortFunctions';
+import { sortByDecrease, sortByIncrease, sortByType } from './sortFunctions';
 
 export default class Player {
   constructor(name, cards) {
@@ -19,7 +19,6 @@ export default class Player {
     const newArrayOfcards = [];
     newArrayOfcards.push(...cardsOfRounds);
     cards.push(newArrayOfcards);
-    console.log(this.cardsOfRounds);
     return this.cardsOfRounds;
   }
   getCardsOfRound(round) {
@@ -137,7 +136,7 @@ export default class Player {
        && hasSameSenTrumpCard(cardsTrump, cardsOrdinary)) {
       const topCard = cardsOrdinary.sort(sortByDecrease).pop();
       const cardsWithSameName = this.cards.slice().sort(sortByDecrease)
-      .filter(card => card.name === topCard.name);
+      .filter(card => card.name === topCard.name).sort(sortByType);
       const setOfSameCards = new Set(cardsWithSameName);
       this.cards = this.cards.filter(cards => !setOfSameCards.has(cards));
       const cardsOrdinary1 = this.cards.filter(card => card.getType() === 'ordinary');
