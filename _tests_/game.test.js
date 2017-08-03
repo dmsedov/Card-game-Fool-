@@ -84,7 +84,7 @@ describe('test', () => {
     expect(game.getCardsOfPlayer(6)).toEqual(Pl2Step6);
 //  check of 7th step
     const Pl1Step7 = [new Card('Jack', 11, 'heart', 'trump'), new Card('Ace', 14, 'heart', 'trump'),
-      new Card('King', 13, 'heart', 'trump'), new Card('King', 13, 'club', 'ordinary')];
+      new Card('King', 13, 'club', 'ordinary'), new Card('King', 13, 'heart', 'trump')];
 
     const Pl2Step7 = [new Card('7', 7, 'diamond', 'ordinary'),
       new Card('Queen', 12, 'diamond', 'ordinary'), new Card('Ace', 14, 'club', 'ordinary'),
@@ -97,7 +97,7 @@ describe('test', () => {
     expect(game.getCardsOfPlayer(7)).toEqual(Pl2Step7);
 //  check of 8th step
     const Pl1Step8 = [new Card('Ace', 14, 'heart', 'trump'),
-      new Card('King', 13, 'heart', 'trump'), new Card('King', 13, 'club', 'ordinary')];
+      new Card('King', 13, 'club', 'ordinary'), new Card('King', 13, 'heart', 'trump')];
 
     const Pl2Step8 = [new Card('7', 7, 'diamond', 'ordinary'),
       new Card('Queen', 12, 'diamond', 'ordinary'), new Card('Ace', 14, 'club', 'ordinary'),
