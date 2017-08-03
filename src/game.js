@@ -116,8 +116,8 @@ export default (nameOfPlayer1, testFunc1, testFunc2, testFunc3) => {
       resultsOfGame.increaseRounds();
       const beatCards = attackerPlayer.giveCards(packOfGame);
       defenderPlayer.takeCards(beatCards);
-      attackerPlayer.addCardsOfRounds();
-      defenderPlayer.addCardsOfRounds();
+      attackerPlayer.addCardsOfRounds(attackerPlayer.cards);
+      defenderPlayer.addCardsOfRounds(defenderPlayer.cards);
       const takeCardsFromPack = (firstPlayer, secondPlayer, stackOfCards) => {
         const countOfCardsPl1 = firstPlayer.cards.length;
         const countOfCardsPl2 = secondPlayer.cards.length;

@@ -14,9 +14,12 @@ export default class Player {
   getCountOfCards() {
     return this.cards.length;
   }
-  addCardsOfRounds() {
+  addCardsOfRounds(cardsOfRounds) {
     const cards = !this.cardsOfRounds ? this.cardsOfRounds = [] : this.cardsOfRounds;
-    cards.push(this.cards);
+    const newArrayOfcards = [];
+    newArrayOfcards.push(...cardsOfRounds);
+    cards.push(newArrayOfcards);
+    console.log(this.cardsOfRounds);
     return this.cardsOfRounds;
   }
   getCardsOfRound(round) {
